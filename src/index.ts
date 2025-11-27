@@ -23,9 +23,6 @@ class App {
         this.app.use(bodyParser.json())
     }
     public run(): void {
-
-        this.app.use(bodyParser.urlencoded({extended: false}))
-        this.app.use(bodyParser.json())
         this.app.get('/', async (req: Request, res: Response) => {
           res.send('GovRates API');
         });
