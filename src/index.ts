@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser'; 
 import { Rates } from './routes/rates';
+import { Conversions } from './routes/conversions';
 
 
 class App {
@@ -14,6 +15,7 @@ class App {
     public port = process.env.PORT || 4444;
     public routes(): void {
         this.app.use('/rates', new Rates().router)
+        this.app.use('/convert', new Conversions().router)
     }
     public config(): void {
         this.app.use(express.json())
