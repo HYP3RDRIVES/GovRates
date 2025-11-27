@@ -33,7 +33,7 @@ export class Conversions {
                 currency2 = toCurrency;
             }
         }
-        const govData = await fetch('https://bcd-api-dca-ipa.cbsa-asfc.cloud-nuage.canada.ca/exchange-rate-lambda/exchange-rates');
+        const govData = await fetch(`${process.env.GOVAPI}`);
         if (!govData.ok){
             return res.status(500).json({message:govData.statusText});
         }

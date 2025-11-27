@@ -21,6 +21,7 @@
     "body-parser": "^2.2.1",
     "concurrently": "^9.2.1",
     "currency.js": "^2.0.4",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "node": "^20.19.6",
     "nodemon": "^3.1.11"
