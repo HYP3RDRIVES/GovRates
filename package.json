@@ -1,0 +1,27 @@
+{
+  "name": "govrates",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "postinstall": "bunx patch-package",
+    "build": "bunx tsc",
+    "start": "node dist/index.js",
+    "watch": "concurrently  \"bunx tsc -w\" \"nodemon dist/index.js\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.1",
+    "body-parser": "^2.2.1",
+    "concurrently": "^9.2.1",
+    "express": "^5.1.0",
+    "node": "^20.19.6",
+    "nodemon": "^3.1.11"
+  }
+}
