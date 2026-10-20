@@ -42,7 +42,7 @@ export class Rates {
         }
         else{
             currencyData = currencyData['ForeignExchangeRates'];
-            let item = currencyData.filter(arr=>{
+            let item = currencyData.filter((arr: any)=>{
                 const matchFrom = arr.FromCurrency.Value == currency1;
                 const matchTo = arr.ToCurrency.Value == currency2;
                 return matchFrom && matchTo;
