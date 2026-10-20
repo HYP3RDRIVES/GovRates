@@ -3,10 +3,10 @@ import bodyParser from 'body-parser';
 import { Rates } from './routes/rates';
 import { Conversions } from './routes/conversions';
 import dotenv from 'dotenv';
+dotenv.config();
 
 class App {
     public constructor() {
-        dotenv.config();
         this.config();
         this.routes()
         this.run();
