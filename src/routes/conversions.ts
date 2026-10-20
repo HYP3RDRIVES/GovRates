@@ -1,6 +1,29 @@
 import express, { Express, Request, Response } from 'express';   
 import { Router } from 'express';  
 import currency  from 'currency.js';
+
+const currencySymbols: Record<string, string> = {
+    USD: '$',
+    EUR: '€',
+    GBP: '£',
+    JPY: '¥',
+    CNY: '¥',
+    CAD: '$',
+    AUD: '$',
+    NZD: '$',
+    KRW: '₩',
+    PKR: 'Rs',
+    RON: 'L',
+    RUB: '₽',
+    PHP: '₱',
+    INR: '₹',
+    HKD: '$',
+    TWD: 'NT$',
+    NOK: 'kr ',
+    DKK: 'kr ',
+};
+
+
 export class Conversions {
     router!: Router
 
@@ -37,14 +60,32 @@ export class Conversions {
         if (!govData.ok){
             return res.status(500).json({message:govData.statusText});
         }
-        let currencyData = await govData.json();
-        if (!currencyData) return res.status(500).json({message:"An Error Occured"});
+        let currencyDataFull = await govData.json();
+        if (!currencyDataFull) return res.status(500).json({message:"An Error Occured"});
+                
+        const currencyData: any[] = currencyDataFull['ForeignExchangeRates'];
         if (doubleConversion){
-            return res.status(400).json({message:"Not Yet Implemented"});
+            let item1 = currencyData.filter((arr: any)=>{
+
+                const matchFrom = arr.FromCurrency.Value == fromCurrency;
+                const matchTo = arr.ToCurrency.Value == "CAD";
+                return matchFrom && matchTo;
+            });
+            let item2 = currencyData.filter((arr: any)=>{
+                const matchFrom = arr.FromCurrency.Value == toCurrency;
+                const matchTo = arr.ToCurrency.Value == "CAD";
+                return matchFrom && matchTo;
+            })
+            const rateConfig = { precision: 6, increment: 0.000001 };
+            let rate1 = currency(item1[0]['Rate'], rateConfig);
+            let finAmt1 = fromAmount.multiply(rate1);
+            let rate2 = currency(item2[0]['Rate'], rateConfig);
+            let finAmt2 = finAmt1.divide(rate2);
+            const targetSymbol = currencySymbols[toCurrency] || '$';
+            return res.status(200).send(finAmt2.format({ symbol: targetSymbol }));
         }
         else{
-            currencyData = currencyData['ForeignExchangeRates'];
-            let item = currencyData.filter(arr=>{
+            let item = currencyData.filter((arr: any)=>{
                 const matchFrom = arr.FromCurrency.Value == currency1;
                 const matchTo = arr.ToCurrency.Value == currency2;
                 return matchFrom && matchTo;
