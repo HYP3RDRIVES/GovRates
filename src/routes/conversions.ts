@@ -45,15 +45,18 @@ export class Conversions {
         let doubleConversion = false;
         let currency1 = "";
         let currency2 = "";
-        if (toCurrency != "CAD" && fromCurrency != "CAD") doubleConversion = true;
+        if (fromCurrency === "JPY" || from)  &&  fromAmount.value  %1 !== 0 ) return res.status(400).json({message:"AN ERROR HAS OCCURED", error:"ILLEGAL AMOUNT"});
+
+        if (toCurrency.toUpperCase() != "CAD" && fromCurrency.toUpperCase() != "CAD") doubleConversion = true;
         else{
             if(fromCurrency === "CAD") {
-                currency2 = fromCurrency; 
-                currency1 = toCurrency;
+                currency2 = fromCurrency.toUpperCase(); 
+                currency1 = toCurrency.toUpperCase();
             }
             else {
-                currency1 = fromCurrency;
-                currency2 = toCurrency;
+                currency1 = fromCurrency.toUpperCase();
+                currency2 = toCurrency.toUpperCase();
+
             }
         }
         const govData = await fetch(`${process.env.GOVAPI}`);
@@ -81,6 +84,8 @@ export class Conversions {
             let finAmt1 = fromAmount.multiply(rate1);
             let rate2 = currency(item2[0]['Rate'], rateConfig);
             let finAmt2 = finAmt1.divide(rate2);
+            console.log(req.query.omitSymbol);
+            if (req.query.omitSymbol === 'true') return res.status(200).send(finAmt2.format({symbol: ""}));
             const targetSymbol = currencySymbols[toCurrency] || '$';
             return res.status(200).send(finAmt2.format({ symbol: targetSymbol }));
         }
@@ -95,7 +100,9 @@ export class Conversions {
             let finAmt;
             if (fromCurrency === "CAD") finAmt = fromAmount.divide(rate);
             else finAmt = fromAmount.multiply(rate);
-            return res.status(200).send(finAmt.format());
+            if (req.query.omitSymbol === 'true') return res.status(200).send(finAmt.format({symbol: ""}));
+            const targetSymbol = currencySymbols[toCurrency] || '$';
+            return res.status(200).send(finAmt.format({ symbol: targetSymbol }));
         }
     })
 }
